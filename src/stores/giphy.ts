@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { api } from 'src/boot/axios'
 
 export interface GiphyImage {
   id: string
@@ -69,11 +69,18 @@ export const useGiphyStore = defineStore('giphy', {
       this.loading = true
       this.error = null
       try {
-        const response = await axios.get<GiphyResponse>('/trending', {
+        console.log('Iniciando fetchTrending...')
+        const response = await api.get<GiphyResponse>('/trending', {
           params: {
             limit: 25
           }
         })
+        console.log('Resposta do Giphy:', response)
+
+        if (!response.data || !response.data.data) {
+          throw new Error('Resposta inválida da API do Giphy')
+        }
+
         this.trending = response.data.data.map(item => ({
           id: item.id,
           title: item.title,
@@ -83,8 +90,8 @@ export const useGiphyStore = defineStore('giphy', {
           height: item.images.original.height
         }))
       } catch (error) {
-        this.error = 'Erro ao carregar GIFs em tendência'
-        console.error(error)
+        console.error('Erro detalhado:', error)
+        this.error = error instanceof Error ? error.message : 'Erro ao carregar GIFs em tendência'
       } finally {
         this.loading = false
       }
@@ -94,12 +101,19 @@ export const useGiphyStore = defineStore('giphy', {
       this.loading = true
       this.error = null
       try {
-        const response = await axios.get<GiphyResponse>('/search', {
+        console.log('Iniciando searchGifs...')
+        const response = await api.get<GiphyResponse>('/search', {
           params: {
             q: query,
             limit: 25
           }
         })
+        console.log('Resposta do Giphy:', response)
+
+        if (!response.data || !response.data.data) {
+          throw new Error('Resposta inválida da API do Giphy')
+        }
+
         this.searchResults = response.data.data.map(item => ({
           id: item.id,
           title: item.title,
@@ -109,8 +123,8 @@ export const useGiphyStore = defineStore('giphy', {
           height: item.images.original.height
         }))
       } catch (error) {
-        this.error = 'Erro ao pesquisar GIFs'
-        console.error(error)
+        console.error('Erro detalhado:', error)
+        this.error = error instanceof Error ? error.message : 'Erro ao pesquisar GIFs'
       } finally {
         this.loading = false
       }
@@ -120,7 +134,7 @@ export const useGiphyStore = defineStore('giphy', {
       this.loading = true
       this.error = null
       try {
-        const response = await axios.get<{ data: GiphyCategory[] }>('/categories')
+        const response = await api.get<{ data: GiphyCategory[] }>('/categories')
         this.categories = response.data.data
       } catch (error) {
         this.error = 'Erro ao carregar categorias'
@@ -134,7 +148,7 @@ export const useGiphyStore = defineStore('giphy', {
       this.loading = true
       this.error = null
       try {
-        const response = await axios.get<GiphyResponse>('/search', {
+        const response = await api.get<GiphyResponse>('/search', {
           params: {
             q: category,
             limit: 25

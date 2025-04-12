@@ -25,33 +25,33 @@
       bordered
     >
       <q-list>
-        <q-item-label header>
+        <q-item-label header class="text-white">
           Navegação
         </q-item-label>
 
         <q-item clickable v-ripple to="/">
           <q-item-section avatar>
-            <q-icon name="home" />
+            <q-icon name="home" class="text-white" />
           </q-item-section>
-          <q-item-section>
+          <q-item-section class="text-white">
             Home
           </q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/favoritos">
+        <q-item clickable v-ripple to="/favoritos" class="text-white">
           <q-item-section avatar>
             <q-icon name="favorite" />
           </q-item-section>
-          <q-item-section>
+          <q-item-section class="text-white">
             Favoritos
           </q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/sobre">
+        <q-item clickable v-ripple to="/sobre" class="text-white">
           <q-item-section avatar>
             <q-icon name="info" />
           </q-item-section>
-          <q-item-section>
+          <q-item-section class="text-white">
             Sobre
           </q-item-section>
         </q-item>
@@ -86,4 +86,5 @@ function toggleLeftDrawer() {
 .q-header {
   background: #1976d2 !important;
 }
+
 </style>

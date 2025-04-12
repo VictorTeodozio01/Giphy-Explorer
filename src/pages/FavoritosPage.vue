@@ -1,38 +1,41 @@
 <template>
   <q-page class="q-pa-md">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Meus Favoritos</h1>
+      <h1 class="text-2xl font-bold mb-6 text-center">Meus Favoritos</h1>
 
       <!-- Lista de GIFs favoritos -->
-      <div v-if="!loading && favorites.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div v-if="!loading && favorites.length > 0" class="giphy-grid">
         <div
           v-for="gif in favorites"
           :key="gif.id"
-          class="bg-white rounded-lg shadow-md overflow-hidden"
+          class="giphy-item"
         >
-          <img
-            :src="gif.previewUrl"
-            :alt="gif.title"
-            class="w-full h-48 object-cover"
-          />
-          <div class="p-4">
-            <p class="text-sm text-gray-600 truncate">{{ gif.title }}</p>
-            <div class="mt-2 flex justify-between items-center">
-              <q-btn
-                icon="favorite"
-                color="red"
-                flat
-                round
-                @click="toggleFavorite(gif)"
-              />
-              <q-btn
-                icon="open_in_new"
-                flat
-                round
-                @click="openGif(gif)"
-              />
+          <div class="giphy-image-container">
+            <img
+              :src="gif.previewUrl"
+              :alt="gif.title"
+              class="giphy-image"
+            />
+            <div class="giphy-overlay">
+              <div class="giphy-actions">
+                <q-btn
+                  icon="favorite"
+                  color="red"
+                  flat
+                  round
+                  @click="toggleFavorite(gif)"
+                />
+                <q-btn
+                  icon="open_in_new"
+                  color="white"
+                  flat
+                  round
+                  @click="openGif(gif)"
+                />
+              </div>
             </div>
           </div>
+          <p class="giphy-title">{{ gif.title }}</p>
         </div>
       </div>
 
@@ -53,17 +56,18 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
 import { useGiphyStore } from 'src/stores/giphy'
+import type { GiphyImage } from 'src/stores/giphy'
 
 const store = useGiphyStore()
 
 const favorites = computed(() => store.favorites)
 const loading = computed(() => store.loading)
 
-const toggleFavorite = (gif: any) => {
+const toggleFavorite = (gif: GiphyImage) => {
   store.toggleFavorite(gif)
 }
 
-const openGif = (gif: any) => {
+const openGif = (gif: GiphyImage) => {
   window.open(gif.url, '_blank')
 }
 
@@ -71,3 +75,85 @@ onMounted(() => {
   store.loadFavorites()
 })
 </script>
+
+<style>
+.giphy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.giphy-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f8f8;
+}
+
+.giphy-image-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  overflow: hidden;
+}
+
+.giphy-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.giphy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.giphy-item:hover .giphy-overlay {
+  opacity: 1;
+}
+
+.giphy-item:hover .giphy-image {
+  transform: scale(1.05);
+}
+
+.giphy-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.giphy-title {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .giphy-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .giphy-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+</style>

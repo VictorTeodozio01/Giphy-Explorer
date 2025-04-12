@@ -23,7 +23,7 @@ Uma aplicação web moderna para explorar e gerenciar GIFs da plataforma GIPHY, 
 1. Clone o repositório:
 
 ```bash
-git clone [URL_DO_REPOSITÓRIO]
+git clone https://github.com/VictorTeodozio01/Giphy-Explorer.git
 cd quasar-project
 ```
 

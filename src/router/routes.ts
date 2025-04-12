@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -7,13 +7,14 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'sobre', component: () => import('pages/SobrePage.vue') },
-      { path: 'favoritos', component: () => import('pages/FavoritosPage.vue') }
-    ]
+      { path: 'favoritos', component: () => import('pages/FavoritosPage.vue') },
+      { path: 'categorias', component: () => import('pages/CategoriasPage.vue') },
+    ],
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
-]
+    component: () => import('pages/ErrorNotFound.vue'),
+  },
+];
 
-export default routes
+export default routes;

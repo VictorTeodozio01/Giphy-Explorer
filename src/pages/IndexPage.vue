@@ -19,16 +19,14 @@
 
       <!-- Lista de GIFs -->
       <div v-if="!loading" class="giphy-grid">
-        <div
-          v-for="gif in displayedGifs"
-          :key="gif.id"
-          class="giphy-item"
-        >
+        <div v-for="gif in displayedGifs" :key="gif.id" class="giphy-item">
           <div class="giphy-image-container">
             <img
               :src="gif.previewUrl"
               :alt="gif.title"
               class="giphy-image"
+              loading="lazy"
+              fetchpriority="low"
             />
             <div class="giphy-overlay">
               <div class="giphy-actions">
@@ -39,13 +37,7 @@
                   round
                   @click="toggleFavorite(gif)"
                 />
-                <q-btn
-                  icon="open_in_new"
-                  color="white"
-                  flat
-                  round
-                  @click="openGif(gif)"
-                />
+                <q-btn icon="open_in_new" color="white" flat round @click="openGif(gif)" />
               </div>
             </div>
           </div>
@@ -62,41 +54,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useGiphyStore } from 'src/stores/giphy'
-import type { GiphyImage } from 'src/stores/giphy'
+import { ref, onMounted, computed } from 'vue';
+import { useGiphyStore } from 'src/stores/giphy';
+import type { GiphyImage } from 'src/stores/giphy';
 
-const store = useGiphyStore()
-const searchQuery = ref('')
+const store = useGiphyStore();
+const searchQuery = ref('');
 
 const displayedGifs = computed<GiphyImage[]>(() => {
-  return searchQuery.value ? store.searchResults : store.trending
-})
+  return searchQuery.value ? store.searchResults : store.trending;
+});
 
-const loading = computed(() => store.loading)
+const loading = computed(() => store.loading);
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
-    store.searchGifs(searchQuery.value)
+    void store.searchGifs(searchQuery.value);
   }
-}
+};
 
 const toggleFavorite = (gif: GiphyImage) => {
-  store.toggleFavorite(gif)
-}
+  store.toggleFavorite(gif);
+};
 
 const isFavorite = (gifId: string) => {
-  return store.isFavorite(gifId)
-}
+  return store.isFavorite(gifId);
+};
 
 const openGif = (gif: GiphyImage) => {
-  window.open(gif.url, '_blank')
-}
+  window.open(gif.url, '_blank');
+};
 
 onMounted(() => {
-  store.loadFavorites()
-  store.fetchTrending()
-})
+  store.loadFavorites();
+  void store.fetchTrending();
+});
 </script>
 
 <style>

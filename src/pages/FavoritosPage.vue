@@ -3,35 +3,20 @@
     <div class="max-w-7xl mx-auto">
       <h1 class="text-2xl font-bold mb-6 text-center">Meus Favoritos</h1>
 
-      <!-- Lista de GIFs favoritos -->
       <div v-if="!loading && favorites.length > 0" class="giphy-grid">
-        <div
-          v-for="gif in favorites"
-          :key="gif.id"
-          class="giphy-item"
-        >
+        <div v-for="gif in favorites" :key="gif.id" class="giphy-item">
           <div class="giphy-image-container">
             <img
               :src="gif.previewUrl"
               :alt="gif.title"
               class="giphy-image"
+              loading="lazy"
+              fetchpriority="low"
             />
             <div class="giphy-overlay">
               <div class="giphy-actions">
-                <q-btn
-                  icon="favorite"
-                  color="red"
-                  flat
-                  round
-                  @click="toggleFavorite(gif)"
-                />
-                <q-btn
-                  icon="open_in_new"
-                  color="white"
-                  flat
-                  round
-                  @click="openGif(gif)"
-                />
+                <q-btn icon="favorite" color="red" flat round @click="toggleFavorite(gif)" />
+                <q-btn icon="open_in_new" color="white" flat round @click="openGif(gif)" />
               </div>
             </div>
           </div>
@@ -39,13 +24,11 @@
         </div>
       </div>
 
-      <!-- Mensagem quando não há favoritos -->
       <div v-else-if="!loading && favorites.length === 0" class="text-center py-12">
         <q-icon name="favorite_border" size="4em" color="grey" />
         <p class="text-gray-600 mt-4">Você ainda não tem GIFs favoritos</p>
       </div>
 
-      <!-- Loading -->
       <div v-else class="flex justify-center items-center h-64">
         <q-spinner color="primary" size="3em" />
       </div>
@@ -54,26 +37,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
-import { useGiphyStore } from 'src/stores/giphy'
-import type { GiphyImage } from 'src/stores/giphy'
+import { onMounted, computed } from 'vue';
+import { useGiphyStore } from 'src/stores/giphy';
+import type { GiphyImage } from 'src/stores/giphy';
 
-const store = useGiphyStore()
+const store = useGiphyStore();
 
-const favorites = computed(() => store.favorites)
-const loading = computed(() => store.loading)
+const favorites = computed(() => store.favorites);
+const loading = computed(() => store.loading);
 
 const toggleFavorite = (gif: GiphyImage) => {
-  store.toggleFavorite(gif)
-}
+  store.toggleFavorite(gif);
+};
 
 const openGif = (gif: GiphyImage) => {
-  window.open(gif.url, '_blank')
-}
+  window.open(gif.url, '_blank');
+};
 
 onMounted(() => {
-  store.loadFavorites()
-})
+  store.loadFavorites();
+});
 </script>
 
 <style>
